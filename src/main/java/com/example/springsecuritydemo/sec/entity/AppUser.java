@@ -1,5 +1,6 @@
 package com.example.springsecuritydemo.sec.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +17,13 @@ public class AppUser {
     @Id
     @GeneratedValue
     private Long id;
+
     @Column(unique = true) // Garantit l'unicité du username
     private String username;
+    //Elle ne sera pas incluse lors de la sérialisation (conversion d'un objet Java en JSON).
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<AppRole> appRoles=new ArrayList<>();
 }

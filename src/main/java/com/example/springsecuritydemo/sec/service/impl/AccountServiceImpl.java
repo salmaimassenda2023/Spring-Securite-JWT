@@ -7,6 +7,7 @@ import com.example.springsecuritydemo.sec.repository.AppUserRepo;
 import com.example.springsecuritydemo.sec.service.AccountService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,17 +18,21 @@ public class AccountServiceImpl implements AccountService {
 
     private AppUserRepo appUserRepo;
     private AppRoleRepo appRoleRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountServiceImpl(AppUserRepo appUserRepo, AppRoleRepo appRoleRepo) {
+    public AccountServiceImpl(AppUserRepo appUserRepo, AppRoleRepo appRoleRepo, PasswordEncoder passwordEncoder) {
         this.appUserRepo = appUserRepo;
         this.appRoleRepo = appRoleRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //Methods Impl
     @Override
     public AppUser addUser(AppUser user) {
 
+        // Encodage du mot de passe avant de sauvegarder l'utilisateur
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return appUserRepo.save(user);
     }
 
